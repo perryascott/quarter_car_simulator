@@ -42,6 +42,16 @@ plt.title("Displacements Over Time")
 plt.legend()
 plt.grid()
 
+# Plot force from active suspension 
+plt.figure(figsize=(10, 6)) 
+plt.plot(df["time"], df["F"], label="Active Suspension Force [N]")
+
+plt.xlabel("Time [s]")
+plt.ylabel("Foce [N]")
+plt.title("Force Over Time")
+plt.legend()
+plt.grid()
+
 # Plot velocities (x1_dot and x2_dot)
 plt.figure(figsize=(10, 6))  # New figure for velocities
 plt.plot(df["time"], df["x1_dot"], label="x1_dot (Sprung Mass Velocity)")

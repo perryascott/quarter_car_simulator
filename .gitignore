@@ -1,5 +1,7 @@
-**.csv
-**/CMakeFiles/
-**/CMakeCache.txt
-**/Makefile
+*.csv
+CMakeFiles/
+CMakeCache.txt
+Makefile
 .DS_Store
+quarter_car
+cmake_install.cmake
