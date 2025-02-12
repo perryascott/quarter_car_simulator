@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void init_solver(Solver* solver, Model* model, float* state, float t0, float tf, float dt, DisturbanceFunction disturbance_function, NumericalSolverFunction solve_step_function) {
+void init_solver(Solver* solver, Model* model, float* state, float t0, float tf, float dt, DisturbanceFunction disturbance_function, NumericalSolverFunction solve_step_function, Controller* controller) {
     solver->model = model;
     solver->state = state;
     solver->t0 = t0;
@@ -10,9 +10,10 @@ void init_solver(Solver* solver, Model* model, float* state, float t0, float tf,
     solver->dt = dt;
     solver->disturbance_function = disturbance_function;
     solver->solve_step_function = solve_step_function;
+    solver->controller = controller;
 };
 
-float* calculate_state_dot(Model* model, float* state, float* disturbances) {
+float* calculate_state_dot(Model* model, float* state, float* disturbances, float* controls) {
 
     float* state_dot = (float*)malloc(sizeof(float) * NUM_STATES);
 
@@ -26,8 +27,13 @@ float* calculate_state_dot(Model* model, float* state, float* disturbances) {
         }
 
         // Propagate disturbances
-        for (size_t k = 0; k < NUM_DISTURBANCE_STATES; k++) {
-            num += disturbances[k] * model->disturbance_plant[i][k];
+        for (size_t j = 0; j < NUM_DISTURBANCE_STATES; j++) {
+            num += disturbances[j] * model->disturbance_plant[i][j];
+        }
+
+        // Propogate control
+        for (size_t j = 0; j < NUM_CONTROL_INPUTS; j++) {
+            num += controls[j] * model->control_plant[i][j];
         }
         
         // Update state_dot array
@@ -54,6 +60,9 @@ void run_forward_integration_solver(Solver* solver, FILE* file) {
     for (size_t i = 0; i < NUM_DISTURBANCE_STATES; i++) {
         fprintf(file, ",%s", solver->model->disturbanceNames[i]);
     }
+    for (size_t i = 0; i < NUM_CONTROL_INPUTS; i++) {
+        fprintf(file, ",%s", solver->model->controlNames[i]);
+    }
     fprintf(file, "\n");
 
     // Write initial state
@@ -61,16 +70,19 @@ void run_forward_integration_solver(Solver* solver, FILE* file) {
     while (t <= solver->tf) {
         printf("t = %f tf = %f dt = %f\n", t, solver->tf, solver->dt);
 
+        // Calculate control law based on current state
+        float* controls = solver->controller->control_law(solver->model, solver->state, solver->controller->controller_data);
+        
         // Calculate disturbance
         float* disturbances = solver->disturbance_function(t);
 
         // Calculate state dot
-        float* state_dot = calculate_state_dot(solver->model, solver->state, disturbances);
+        // printf("controls[0] = %f\n", controls[0]);
+        float* state_dot = calculate_state_dot(solver->model, solver->state, disturbances, controls);
 
         // Run one step of forward integration
         solver->solve_step_function(solver->state, state_dot, solver->dt);
         free(state_dot);
-        
 
         // Increment time
         t += solver->dt;
@@ -85,7 +97,12 @@ void run_forward_integration_solver(Solver* solver, FILE* file) {
         for (size_t i = 0; i < NUM_DISTURBANCE_STATES; i++) {
             fprintf(file, ",%f", disturbances[i]);
         }
+        // Log controls
+        for (size_t i = 0; i < NUM_CONTROL_INPUTS; i++) {
+            fprintf(file, ",%f", controls[i]);
+        }
         free(disturbances);
+        free(controls);
         fprintf(file, "\n");
 
 

@@ -1,6 +1,7 @@
 #include "model.h"
 #include "solver.h"
 #include "disturbance.h"
+#include "control.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -21,8 +22,10 @@ int main(int argc, char* argv[]) {
     float ms = 300; // kg
     float mu = 50; //kg
 
-    // Define plant, and disturbances
+    // Define system, control, and disturbance plants
     Model model = {
+
+        // System plant
         {
             {0, 0, 1, 0},
             {0, 0, 0, 1},
@@ -30,6 +33,17 @@ int main(int argc, char* argv[]) {
             {ks / mu, -(ku + ks) / mu, bs / mu, -(bs + bu) / mu}
         },
         {"x1", "x2", "x1_dot", "x2_dot"},
+
+        // Control plant
+        {
+            {0},
+            {0},
+            {1.0 / ms},
+            {-1.0 / mu}
+        },
+        {"F"},
+
+        // Disturbance plant
         {
             {0, 0},
             {0, 0},
@@ -40,7 +54,7 @@ int main(int argc, char* argv[]) {
     };
 
     // Define initial conditions
-    float state[NUM_STATES] = {0.0, 0.125, 0.0, 0.0};
+    float state[NUM_STATES] = {0.0, 0.0, 0.0, 0.0};
 
     // Define simulation times (seconds)
     float dt = 0.0001;
@@ -53,10 +67,14 @@ int main(int argc, char* argv[]) {
     // Solvers
     Solver solver;
 
+    // Select controller
+    Controller* controller = create_pid_controller(-200.0, -20.0, 0, dt);
+    // Controller* controller = create_pid_controller(0.0, 0, 0, dt);
+
     // Select disturbance and solver type
-    // init_solver(&solver, &model, state, t0, tf, dt, no_disturbance, forward_integration);
-    // init_solver(&solver, &model, state, t0, tf, dt, sinusoidal_disturbance, forward_integration);
-    init_solver(&solver, &model, state, t0, tf, dt, trapezoidal_wave_disturbance, forward_integration);
+    // init_solver(&solver, &model, state, t0, tf, dt, no_disturbance, forward_integration, controller);
+    // init_solver(&solver, &model, state, t0, tf, dt, sinusoidal_disturbance, forward_integration, controller);
+    init_solver(&solver, &model, state, t0, tf, dt, trapezoidal_wave_disturbance, forward_integration, controller);
 
     // Open file for logging
     FILE* file = fopen(output_file, "w");
@@ -67,6 +85,9 @@ int main(int argc, char* argv[]) {
 
     // Run simulation
     run_forward_integration_solver(&solver, file);
+
+    // Free controller data
+    controller->free_controller_data(controller->controller_data);
 
     fclose(file);
     return 0;

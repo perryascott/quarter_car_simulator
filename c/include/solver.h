@@ -1,6 +1,7 @@
 #ifndef SOLVER_H
 #define SOLVER_H
 #include "model.h"
+#include "control.h"
 #include <stdio.h>
 
 // Disturbance function typedef
@@ -17,6 +18,9 @@ typedef struct {
     // States
     float* state;
 
+    // Controller
+    Controller* controller;
+
     // Disturbance function
     DisturbanceFunction disturbance_function;
 
@@ -28,7 +32,7 @@ typedef struct {
 
 } Solver;
 
-void init_solver(Solver* solver, Model* model, float* state, float t0, float tf, float dt, DisturbanceFunction disturbance_function, NumericalSolverFunction solve_step_function);
+void init_solver(Solver* solver, Model* model, float* state, float t0, float tf, float dt, DisturbanceFunction disturbance_function, NumericalSolverFunction solve_step_function, Controller* controller);
 void forward_integration(float* state, float* state_dot, float dt);
 void run_forward_integration_solver(Solver* solver, FILE* file);
 

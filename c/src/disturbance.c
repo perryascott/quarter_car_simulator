@@ -45,7 +45,7 @@ float* trapezoidal_wave_disturbance(float t) {
     }
 
     // Parameters (adjust these)
-    float amplitude = 1.0f;      // Amplitude of the wave
+    float amplitude = 0.2f;      // Amplitude of the wave
     float frequency = 0.2f;      // Frequency (Hz)
     float rise_time = 0.5f;     // Time to reach full rise
     float plateau_time = 2.0f;   // Time at max/min amplitude (seconds)
