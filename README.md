@@ -16,9 +16,9 @@ python3 ../python/plot_csv.py ../python/test.csv
 ### TODO:
 
 - [ ] make PID minimize jerk
+- [ ] Full state FB
 - [ ] requirements.txt Python code
 - [ ] rk4 solver
-- [ ] Full state FB
 - [ ] LQR controller
 - [ ] MPC
 - [ ] MPC with preview control

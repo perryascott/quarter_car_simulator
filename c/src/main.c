@@ -71,17 +71,21 @@ int main(int argc, char* argv[]) {
     // Define state names
     const char* stateNames[NUM_STATES] = {"x1", "x2", "x1_dot", "x2_dot"};
 
-    // Solvers
-    Solver solver;
-
     // Select controller
     Controller* controller = create_pid_controller(-10000.0, 0.0, -1000.0, dt);
-    // Controller* controller = create_pid_controller(0.0, 0, 0, dt);
+    // Controller* controller = create_non_controller();
 
-    // Select disturbance and solver type
-    // init_solver(&solver, &model, state, t0, tf, dt, no_disturbance, forward_integration, controller);
-    // init_solver(&solver, &model, state, t0, tf, dt, sinusoidal_disturbance, forward_integration, controller);
-    init_solver(&solver, &model, state, t0, tf, dt, trapezoidal_wave_disturbance, forward_integration, controller);
+    // Select disturbance function
+    // DisturbanceFunction disturbanceFunction = no_disturbance;
+    // DisturbanceFunction disturbanceFunction = sinusoidal_disturbance;
+    DisturbanceFunction disturbanceFunction = trapezoidal_wave_disturbance;
+
+    // Select solver function
+    NumericalSolverFunction numericalSolverFunction = forward_integration;
+
+    // Init solver
+    Solver solver;
+    init_solver(&solver, &model, state, t0, tf, dt, disturbanceFunction, numericalSolverFunction, controller);
 
     // Open file for logging
     FILE* file = fopen(output_file, "w");

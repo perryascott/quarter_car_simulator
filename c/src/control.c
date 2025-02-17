@@ -139,3 +139,34 @@ Controller* create_pid_controller(float p, float i, float d, float dt) {
 
     return controller;
 }
+
+// PID Control Law Function
+float* no_control(Model* model, float* state, float* disturbance, void* data) {
+
+    float* control_input = (float*)malloc(sizeof(float) * NUM_CONTROL_INPUTS);
+
+    // Initialize control input to zero
+    for (int i = 0; i < NUM_CONTROL_INPUTS; i++) {
+        control_input[i] = 0.0f;
+    }
+
+    return control_input;
+}
+
+void free_non_controller_data(void* data) {
+    return;
+}
+
+Controller* create_non_controller() {
+    Controller* controller = (Controller*)malloc(sizeof(Controller));
+    if (controller == NULL) {
+        perror("Controller memory allocation failed");
+        exit(1);
+    }
+
+    controller->control_law = no_control;
+    controller->controller_data = NULL;
+    controller->free_controller_data = free_non_controller_data;
+
+    return controller;
+}

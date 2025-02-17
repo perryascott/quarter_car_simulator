@@ -14,6 +14,7 @@ typedef struct {
 } Controller;
 
 Controller* create_pid_controller(float p, float i, float d, float dt);
+Controller* create_non_controller();
 
 // PID Controller Struct
 typedef struct {

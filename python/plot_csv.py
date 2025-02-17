@@ -35,6 +35,8 @@ plt.grid()
 plt.figure(figsize=(10, 6))
 plt.plot(df["time"], df["x1"] + m1_displacement + df['xg'], label="x1 (Sprung Mass + 0.6m)")  # Offset x1
 plt.plot(df["time"], df["x2"] + m2_displacement + df['xg'], label="x2 (Unsprung Mass + 0.2m)") # Offset x2
+# plt.plot(df["time"], df["x1"], label="x1 (Sprung Mass + 0.6m)")  # Offset x1
+# plt.plot(df["time"], df["x2"], label="x2 (Unsprung Mass + 0.2m)") # Offset x2
 
 plt.xlabel("Time (s)")
 plt.ylabel("Displacement (m)")
