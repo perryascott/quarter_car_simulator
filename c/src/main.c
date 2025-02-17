@@ -50,6 +50,13 @@ int main(int argc, char* argv[]) {
             {0, 0},
             {ku / mu, bu / mu}
         },
+        // Reference change
+        {
+            {-1.0, 0.0},
+            {-1.0, 0.0},
+            {0.0, -1.0},
+            {0.0, -1.0}
+        },
         {"xg", "xg_dot"}
     };
 
@@ -59,7 +66,7 @@ int main(int argc, char* argv[]) {
     // Define simulation times (seconds)
     float dt = 0.0001;
     float t0 = 0;
-    float tf = 20;
+    float tf = 40;
 
     // Define state names
     const char* stateNames[NUM_STATES] = {"x1", "x2", "x1_dot", "x2_dot"};
@@ -68,7 +75,7 @@ int main(int argc, char* argv[]) {
     Solver solver;
 
     // Select controller
-    Controller* controller = create_pid_controller(-200.0, -20.0, 0, dt);
+    Controller* controller = create_pid_controller(-10000.0, 0.0, -1000.0, dt);
     // Controller* controller = create_pid_controller(0.0, 0, 0, dt);
 
     // Select disturbance and solver type

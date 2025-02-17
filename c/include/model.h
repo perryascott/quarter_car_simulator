@@ -18,6 +18,7 @@ typedef struct {
 
     // Disturbance
     float disturbance_plant[NUM_STATES][NUM_DISTURBANCE_STATES];
+    float disturbance_reference_change[NUM_STATES][NUM_DISTURBANCE_STATES];
     char* disturbanceNames[NUM_DISTURBANCE_STATES];
 
 } Model;

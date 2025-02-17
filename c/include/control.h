@@ -1,9 +1,10 @@
 #ifndef CONTROL_H
 #define CONTROL_H
 #include "model.h"
+#include <stdint.h>
 
 // Solver function typedef
-typedef float* (*ControlLawFunction)(Model*, float*, void*);
+typedef float* (*ControlLawFunction)(Model*, float*, float*, void*);
 
 // Generic Controller Struct
 typedef struct {
@@ -20,7 +21,10 @@ typedef struct {
     float dt;
     float error_prev;
     float error_integral;
+    float* disturbance;
     float* prev_state;
+    float* prev_prev_state;
+    uint8_t states_saved;
 } PIDControllerData;
 
 

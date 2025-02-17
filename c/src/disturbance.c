@@ -19,8 +19,8 @@ float* sinusoidal_disturbance(float t) {
     }
 
     // Define parameters for the sine wave (you can adjust these)
-    float amplitude = 0.1f;  // Amplitude of the sine wave
-    float frequency = 0.4f;  // Frequency of the sine wave (Hz)
+    float amplitude = 0.05f;  // Amplitude of the sine wave
+    float frequency = 5.0f;  // Frequency of the sine wave (Hz)
     float phase_offset = 0.0f; // Phase offset (radians)
 
     // Calculate 0th order disturbance (e.g., position/displacement)
@@ -46,9 +46,9 @@ float* trapezoidal_wave_disturbance(float t) {
 
     // Parameters (adjust these)
     float amplitude = 0.2f;      // Amplitude of the wave
-    float frequency = 0.2f;      // Frequency (Hz)
+    float frequency = 0.05f;      // Frequency (Hz)
     float rise_time = 0.5f;     // Time to reach full rise
-    float plateau_time = 2.0f;   // Time at max/min amplitude (seconds)
+    float plateau_time = 6.0f;   // Time at max/min amplitude (seconds)
 
     // Calculate the period of the wave
     float period = 1.0f / frequency;

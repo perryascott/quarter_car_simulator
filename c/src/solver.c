@@ -70,12 +70,12 @@ void run_forward_integration_solver(Solver* solver, FILE* file) {
     while (t <= solver->tf) {
         printf("t = %f tf = %f dt = %f\n", t, solver->tf, solver->dt);
 
-        // Calculate control law based on current state
-        float* controls = solver->controller->control_law(solver->model, solver->state, solver->controller->controller_data);
-        
         // Calculate disturbance
         float* disturbances = solver->disturbance_function(t);
 
+        // Calculate control law based on current state
+        float* controls = solver->controller->control_law(solver->model, solver->state, disturbances, solver->controller->controller_data);
+        
         // Calculate state dot
         // printf("controls[0] = %f\n", controls[0]);
         float* state_dot = calculate_state_dot(solver->model, solver->state, disturbances, controls);
